@@ -8,15 +8,36 @@ var b1radius = 150;
 var b1tapped = false;
 var b2tapped = false;
 var b3tapped = false;
+var crowntapped = 0;
+var dirttapped = 0;
+var crownclicked = false;
+var dirtclicked = false;
+
+var crownscore = " Crowns";
+var dirtscore = " Dirt";
+
 var bg2 = false;
 var loop1 = false;
 var loop2 = false;
 var loop3 = false;
 var loop4 = false;
 var loop5 = false;
+var loop6 = false;
+
+var looptime = 0;
+var roundtime = 15000;
+var looptime2 = 0;
+var currentround = 0;
+
+var loopclick = 0;
+var clicktime = 100;
+var loopclick2 = 0;
+var currentclick = 0;
+
 var rng = 0;
 var btnWidth = 0.0;
 var btnHeight = 0.0;
+var btnWidth2 = 0.0;
 var btnY = 0.0;
 
 /* * * *  * * * * * *
@@ -24,8 +45,7 @@ var btnY = 0.0;
 * * * * * * * * * * */
 
 function preload(){
-  sscreen = loadImage("assets/splashscreen.png");
-  img2 = loadImage("assets/ssbutton.png");
+  gamescreen = loadImage("assets/Game-screen.jpg");
 
   blim = loadImage("assets/blim.jpg");
   blob = loadImage("assets/blob.jpg");
@@ -41,6 +61,11 @@ function preload(){
   crownbtn = loadImage("assets/GiveCrown.png");
   dirtbtn = loadImage("assets/GiveDirt.png");
 
+  blimbgfin = loadImage("assets/blimfin.jpg");
+  blobbgfin = loadImage("assets/blobfin.jpg");
+  blarkbgfin = loadImage("assets/blarkfin.jpg");
+  crownsml = loadImage("assets/crownSmall.png");
+  dirtsml = loadImage("assets/dirtSmall.png");
 }
 
 function setup()
@@ -51,10 +76,13 @@ function setup()
 
 //make the button height in proportion to the width 
 //which is in proportion to screen width
-  btnWidth = 0.781*windowWidth;
+  btnWidth = 0.6*windowWidth;
   btnHeight = 0.829*btnWidth;
+  btnWidth2 = 0.98146*btnHeight;
 
-  btnY = 0.298*windowHeight;
+  btnY = 0.29*windowHeight;
+  btnY2 = windowHeight-btnY
+
   
 }
 
@@ -66,13 +94,11 @@ function draw()
  * drawing the intro screen *
 * * * * * * * * * * * * * * */
 
-	if (loop1 == false){ //the things draw in the intro screen
+  if (loop1 == false){ //the things draw in the intro screen
 
    imageMode(CORNER);
-    image(sscreen,100,100);
+    image(gamescreen, 0, 0, windowWidth, windowHeight);
 
-    imageMode(CENTER);
-    image(img2,windowWidth/2,1000+b1radius/2);
     loop1 = true; // adding a variable so that it's less taxing for phone to loop
   }
 
@@ -82,9 +108,9 @@ function draw()
     loop2 = true;
   }
 
-/* * * * * * * * 
- * card screen *
- * * * * * * * */ 
+/* * * * * * ** * * * * * * * *
+ * card screen with character *
+ * * * * * * * * * * * * ** * */ 
 
  imageMode(CORNER);
 
@@ -102,61 +128,171 @@ function draw()
     image (blim, 0,0, windowWidth, windowHeight);
     rng = 3;
     loop3 = true;
-	}
+  }
 
 /* * * * *  * * * * * * * * * * * * * * *
  * load card screen back when b2 tapped *
  * * * * *  * * * * * * * * * * * * * * */
 
  if (b2tapped == true && rng == 1  && loop4 == false){
-  image (blobback, 0,0, windowWidth, windowHeight);
+  image (blobback, 0, 0, windowWidth, windowHeight);
   loop4 = true;
  } 
  else if (b2tapped == true && rng == 2 && loop4 == false){
-  image (blarkback, 0,0, windowWidth, windowHeight);
+  image (blarkback, 0, 0, windowWidth, windowHeight);
   loop4 = true;
  } 
  else if (b2tapped == true && rng == 3 && loop4 == false){
-  image (blimback, 0,0, windowWidth, windowHeight);
+  image (blimback, 0, 0, windowWidth, windowHeight);
   loop4 = true;
  }
 
- /* * * * * * * * * * *
- * tap game screen bg *
- * * * * * * * * * ** */
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * tap game screen bg with the crown and dirt buttons *
+ * * * * * * * * * * * * * * * * * * * * * * * * * *  */
 
  if (b3tapped == true && rng == 1 && loop5 == false && loop4 == true){
   imageMode(CORNER);
-  image (blobbg, 0,0,windowWidth, windowHeight);
-
-  imageMode(CENTER);
-  image(crownbtn, windowWidth/2, windowHeight/3, btnWidth, btnHeight);
-  image(dirtbtn, windowWidth/2, 2 * windowHeight/3, btnWidth, btnHeight);
-
-  loop5 = true;
- } 
- else if (b3tapped == true && rng == 2 && loop5 == false && loop4 == true){
-  imageMode(CORNER);
-  image (blarkbg, 0,0,windowWidth, windowHeight);
-
-  imageMode(CENTER);
-  image(crownbtn, windowWidth/2, windowHeight/3, btnWidth, btnHeight);
-  image(dirtbtn, windowWidth/2, 2 * windowHeight/3, btnWidth, btnHeight);
-
-  loop5 = true;
- } 
- else if (b3tapped == true && rng == 3 && loop5 == false && loop4 == true){
-  imageMode(CORNER);
-  image (blimbg, 0,0,windowWidth, windowHeight);
+  image (blobbg, 0, 0, windowWidth, windowHeight);
 
   imageMode(CENTER);
   image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
-  image(dirtbtn, windowWidth/2, windowHeight-btnY, btnWidth, btnHeight);
+  image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+  loop5 = true;
+  
+  //start the timer
+  looptime = Date.now();
+ } 
+ else if (b3tapped == true && rng == 2 && loop5 == false && loop4 == true){
+  imageMode(CORNER);
+  image (blarkbg, 0, 0, windowWidth, windowHeight);
+
+  imageMode(CENTER);
+  image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+  image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+  loop5 = true;
+
+  // start the timer
+  looptime = Date.now();
+ } 
+ else if (b3tapped == true && rng == 3 && loop5 == false && loop4 == true){
+  imageMode(CORNER);
+  image (blimbg, 0, 0, windowWidth, windowHeight);
+
+  imageMode(CENTER);
+  image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+  image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
   
   loop5 = true;
+
+  // start the timer
+  looptime = Date.now();
  }
 
+// var looptime = 0;
+// var roundtime = 15000;
+// var looptime2 = 0;
+// var currentround = 0;
+
+// var loopclick = 0;
+// var clicktime = 100;
+// var loopclick2 = 0;
+// var currentclick = 0;
+
+/* * * * *  * * * * * *
+ * clicker timer loop *
+ * * * * * * * * * ** */
+
+if ( crownclicked == true){
+  loopclick2 = Date.now();
+  currentclick = loopclick2 - loopclick;
+  
+}
+
+if (currentclick > clicktime){
+  imageMode(CENTER);
+  image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+  image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+  currentclick = 0;
+  crownclicked = false;
+  dirtclicked = false;
+}
+
+if (dirtclicked == true){
+  loopclick2 = Date.now();
+  currentclick = loopclick2 - loopclick;
+}
+
+ /* * * * * * * 
+ * timer loop *
+ * * * * * ** */
+
+if (loop5 == true && loop6 == false){
+  looptime2 = Date.now();
+  currentround = looptime2 - looptime;
+}
+
+ /* * * * * * * * 
+ * score screen *
+ * * * * * ** * */
+
+  if (currentround > roundtime && rng == 1 && loop5 == true){
+  imageMode(CORNER);
+  image (blobbgfin, 0, 0, windowWidth, windowHeight);
+
+  imageMode(CENTER);
+  image(crownsml, windowWidth/2, btnY, 0.75*btnWidth, 0.75*btnHeight);
+  image(dirtsml, windowWidth/2, btnY2, 0.75*btnWidth, 0.75*btnHeight);
+
+  fill(0);
+  textSize(28);
+  textAlign(CENTER);
+  text(crowntapped + crownscore, windowWidth/2, btnY+0.75*btnWidth/2+20);
+  text(dirttapped + dirtscore, windowWidth/2, btnY2+0.75*btnWidth/2+20);
+
+  loop6 = true;
+  } 
+
+  else if (currentround > roundtime && rng == 2 && loop5 == true){
+  imageMode(CORNER);
+  image (blarkbgfin, 0, 0, windowWidth, windowHeight);
+
+  imageMode(CENTER);
+  image(crownsml, windowWidth/2, btnY, 0.75*btnWidth, 0.75*btnHeight);
+  image(dirtsml, windowWidth/2, btnY2, 0.75*btnWidth, 0.75*btnHeight);
+
+  fill(0);
+  textSize(28); 
+  textAlign(CENTER);
+  text(crowntapped + crownscore, windowWidth/2, btnY+0.75*btnWidth/2+20);
+  text(dirttapped + dirtscore, windowWidth/2, btnY2+0.75*btnWidth/2+20);
+
+  loop6 = true;
+  } 
+
+  else if (currentround > roundtime && rng == 3 && loop5 == true){
+  imageMode(CORNER);
+  image (blimbgfin, 0, 0, windowWidth, windowHeight);
+
+  imageMode(CENTER);
+  image(crownsml, windowWidth/2, btnY, 0.75*btnWidth, 0.75*btnHeight);
+  image(dirtsml, windowWidth/2, btnY2, 0.75*btnWidth, 0.75*btnHeight);
+
+  fill(0);
+  textSize(28);
+  textAlign(CENTER);
+  text(crowntapped + crownscore, windowWidth/2, btnY+0.75*btnWidth/2+20);
+  text(dirttapped + dirtscore, windowWidth/2, btnY2+0.75*btnWidth/2+20);
+
+  loop6 = true;
+  }
+
+
 } // bottom bracket draw
+
 
 
 
@@ -164,43 +300,114 @@ function draw()
  * button clicking *
  * * * * * * * * * */ 
 
+ var last_press = 0;
+
 // When the user clicks the mouse 
 function mousePressed() {
 
   // Check if mouse is inside the circle
-  var d = dist(mouseX, mouseY, windowWidth/2,1000+b1radius/2);
-  if (d < b1radius/2 && loop1 == true) {
+  // var d = dist(mouseX, mouseY, windowWidth/2,1000+b1radius/2);
+  
+  if (touchY >= windowHeight-windowHeight/6 && loop1 == true) {
     b1tapped = true;
   }
+
   // clicking on the card screen
-  if (mouseY >= windowHeight-windowHeight/3 && loop2 == true){
+  if (mouseY >= windowHeight-windowHeight/3 && loop3 == true){
     b2tapped = true;
   }
 
   // clicking on the back of the card screen
-  if (mouseY >= windowHeight-windowHeight/6 && loop3 == true){
+  if (mouseY >= windowHeight-windowHeight/6 && loop4 == true){
     b3tapped = true;
   }
+
+  var dcrown = dist(mouseX, mouseY, windowWidth/2, btnY);
+  var ddirt = dist(mouseX, mouseY, windowWidth/2, windowHeight-btnY);
+
+    if (dcrown < btnHeight/2 && loop5 == true && !loop6){
+      crowntapped += 1;
+      print("crown tapped: " + crowntapped);
+
+      noStroke();
+      fill(255,255,255,100);
+      ellipse(windowWidth/2,btnY,btnWidth2,btnHeight);
+
+      // start anim timer
+      loopclick = Date.now();
+      crownclicked = true;
+    }
+
+    if (ddirt < btnHeight/2 && loop5 == true && !loop6){
+      dirttapped += 1;
+      print("dirt tapped: " + dirttapped);
+
+      noStroke();
+      fill(255,255,255,100);
+      ellipse(windowWidth/2,windowHeight-btnY,btnWidth2,btnHeight);
+
+      // start anim timer
+      loopclick = Date.now();
+      dirtclicked = true;
+    }
 
   }
 
 
 function touchStarted()
 {
-  var d = dist(touchX, touchY, windowWidth/2,1000+b1radius/2);
+  // var d = dist(touchX, touchY, windowWidth/2,1000+b1radius/2);
 
-  if (d < b1radius/2 && loop1 == true) {
-    b1tapped = true;
-  }
+  // var this_press = Date.now();
+  // console.log(this_press-last_press);
+
+  //if (last_press - this_press > 500){
+
+    if (touchY >= windowHeight-windowHeight/6 && loop1 == true) {
+      b1tapped = true;
+    }
 
 
-  if (touchY >= windowHeight-windowHeight/3 && loop3 == true){
-    b2tapped = true;
-  }
+    if (touchY >= windowHeight-windowHeight/3 && loop3 == true){
+      b2tapped = true;
+    }
 
-  if (touchY >= windowHeight-windowHeight/6 && loop4 == true){
-    b3tapped = true;
-  }
+    if (touchY >= windowHeight-windowHeight/6 && loop4 == true){
+      b3tapped = true;
+    }
+
+    //touching the crown and dirt buttons
+
+    var dcrown = dist(touchX, touchY, windowWidth/2, btnY);
+    var ddirt = dist(touchX, touchY, windowWidth/2, windowHeight-btnY);
+
+    if (dcrown < btnHeight/2 && loop5 == true && !loop6){
+      crowntapped += 1;
+      print("crown tapped: " + crowntapped);
+
+      noStroke();
+      fill(255,255,255,100);
+      ellipse(windowWidth/2,btnY,btnWidth2,btnHeight);
+
+      // start anim timer
+      loopclick = Date.now();
+      crownclicked = true;
+    }
+
+    if (ddirt < btnHeight/2 && loop5 == true && !loop6){
+      dirttapped += 1;
+      print("dirt tapped: " + dirttapped);
+
+      noStroke();
+      fill(255,255,255,100);
+      ellipse(windowWidth/2,windowHeight-btnY,btnWidth2,btnHeight);
+
+      // start anim timer
+      loopclick = Date.now();
+      dirtclicked = true;
+    }
+    //last_press = this_press;
+  //}
+  
+
 }
-
-
