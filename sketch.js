@@ -1,7 +1,10 @@
-/*
- * Roxanne Baril-Bédard
- * Exercise in p5js: election game
- */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                     *
+ * Roxanne Baril-Bédard, Dikla Sinair and Emilia Mason *
+ *                                                     *
+ * Experiment 2: Bablebop, the election game           *
+ *                                                     *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
 var b1radius = 150;
@@ -25,9 +28,10 @@ var loop5 = false;
 var loop6 = false;
 
 var looptime = 0;
-var roundtime = 15000;
+var roundtime = 15000 //240000; // 4 min
 var looptime2 = 0;
 var currentround = 0;
+var laststretch = false;
 
 var loopclick = 0;
 var clicktime = 100;
@@ -39,6 +43,18 @@ var btnWidth = 0.0;
 var btnHeight = 0.0;
 var btnWidth2 = 0.0;
 var btnY = 0.0;
+
+// var btnWidthA = 0;
+// var btnWidthB = btnWidth+8;
+// var btnWidthC = btnWidth+12;
+// var btnWidthD = btnWidth+16;
+// var btnWidthE = btnWidth+20;
+
+// var btnHeightA = btnWidth+4;
+// var btnHeightB = btnWidth+8;
+// var btnHeightC = btnWidth+12;
+// var btnHeightD = btnWidth+16;
+// var btnHeightE = btnWidth+20;
 
 /* * * *  * * * * * *
  *  load the images *
@@ -71,7 +87,7 @@ function preload(){
 function setup()
 {
 //createCanvas(1080,1920);
-  rng = random (1,10);
+  rng = random (1,9);
   createCanvas(windowWidth, windowHeight);
 
 //make the button height in proportion to the width 
@@ -82,6 +98,18 @@ function setup()
 
   btnY = 0.29*windowHeight;
   btnY2 = windowHeight-btnY
+
+btnWidthA = btnWidth+4;
+btnWidthB = btnWidth+8;
+btnWidthC = btnWidth+12;
+btnWidthD = btnWidth+16;
+btnWidthE = btnWidth+20;
+
+btnHeightA = btnWidth+4;
+btnHeightB = btnWidth+8;
+btnHeightC = btnWidth+12;
+btnHeightD = btnWidth+16;
+btnHeightE = btnWidth+20;
 
   
 }
@@ -118,13 +146,15 @@ function draw()
     image (blob, 0,0,windowWidth, windowHeight);
     rng = 1;
     loop3 = true;
-  } 
+  }
+
   else if (loop2 == true && rng >= 4 && rng <= 6 && loop3 == false) {
     image (blark, 0,0,windowWidth, windowHeight);
     rng = 2;
     loop3 = true;
-  } 
-  else if (loop2 == true && rng >= 7 && rng <= 10 && loop3 == false) {
+  }
+
+  else if (loop2 == true && rng >= 7 && rng <= 9 && loop3 == false) {
     image (blim, 0,0, windowWidth, windowHeight);
     rng = 3;
     loop3 = true;
@@ -137,11 +167,13 @@ function draw()
  if (b2tapped == true && rng == 1  && loop4 == false){
   image (blobback, 0, 0, windowWidth, windowHeight);
   loop4 = true;
- } 
+ }
+
  else if (b2tapped == true && rng == 2 && loop4 == false){
   image (blarkback, 0, 0, windowWidth, windowHeight);
   loop4 = true;
- } 
+ }
+
  else if (b2tapped == true && rng == 3 && loop4 == false){
   image (blimback, 0, 0, windowWidth, windowHeight);
   loop4 = true;
@@ -177,6 +209,7 @@ function draw()
   // start the timer
   looptime = Date.now();
  } 
+
  else if (b3tapped == true && rng == 3 && loop5 == false && loop4 == true){
   imageMode(CORNER);
   image (blimbg, 0, 0, windowWidth, windowHeight);
@@ -191,27 +224,17 @@ function draw()
   looptime = Date.now();
  }
 
-// var looptime = 0;
-// var roundtime = 15000;
-// var looptime2 = 0;
-// var currentround = 0;
-
-// var loopclick = 0;
-// var clicktime = 100;
-// var loopclick2 = 0;
-// var currentclick = 0;
-
 /* * * * *  * * * * * *
  * clicker timer loop *
  * * * * * * * * * ** */
 
-if ( crownclicked == true){
+if (crownclicked == true ){
   loopclick2 = Date.now();
   currentclick = loopclick2 - loopclick;
   
 }
 
-if (currentclick > clicktime){
+if (currentclick > clicktime ){
   imageMode(CENTER);
   image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
   image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
@@ -221,7 +244,7 @@ if (currentclick > clicktime){
   dirtclicked = false;
 }
 
-if (dirtclicked == true){
+if (dirtclicked == true ){
   loopclick2 = Date.now();
   currentclick = loopclick2 - loopclick;
 }
@@ -234,6 +257,59 @@ if (loop5 == true && loop6 == false){
   looptime2 = Date.now();
   currentround = looptime2 - looptime;
 }
+
+
+ /* * * * * * * * * * * * * * * * * * * * * *
+ * pulsating button animation / not working *
+ * * * * * ** * * * * * * * * * * * * * * * */
+
+// if (currentround > 0.75*roundtime && loop6 == false){
+
+//   frameRate(6);
+  
+//   imageMode(CENTER);
+//   image(crownbtn, windowWidth/2, btnY, btnWidthA, btnHeightA);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthB, btnHeightB);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthC, btnHeightC);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthD, btnHeightD);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthD, btnHeightD);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidth, btnHeight);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthE, btnHeightE);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthA, btnHeightA);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthD, btnHeightD);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthB, btnHeightB);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthC, btnHeightC);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthC, btnHeightC);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthB, btnHeightB);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthD, btnHeightD);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidthA, btnHeightA);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthE, btnHeightE);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthD, btnHeightD);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthC, btnHeightC);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthB, btnHeightB);
+
+//   image(crownbtn, windowWidth/2, btnY, btnWidth, btnHeight);
+//   image(dirtbtn, windowWidth/2, btnY2, btnWidthA, btnHeightA);
+// }
 
  /* * * * * * * * 
  * score screen *
@@ -248,7 +324,7 @@ if (loop5 == true && loop6 == false){
   image(dirtsml, windowWidth/2, btnY2, 0.75*btnWidth, 0.75*btnHeight);
 
   fill(0);
-  textSize(28);
+  textSize(32);
   textAlign(CENTER);
   text(crowntapped + crownscore, windowWidth/2, btnY+0.75*btnWidth/2+20);
   text(dirttapped + dirtscore, windowWidth/2, btnY2+0.75*btnWidth/2+20);
@@ -265,7 +341,7 @@ if (loop5 == true && loop6 == false){
   image(dirtsml, windowWidth/2, btnY2, 0.75*btnWidth, 0.75*btnHeight);
 
   fill(0);
-  textSize(28); 
+  textSize(32); 
   textAlign(CENTER);
   text(crowntapped + crownscore, windowWidth/2, btnY+0.75*btnWidth/2+20);
   text(dirttapped + dirtscore, windowWidth/2, btnY2+0.75*btnWidth/2+20);
@@ -282,7 +358,7 @@ if (loop5 == true && loop6 == false){
   image(dirtsml, windowWidth/2, btnY2, 0.75*btnWidth, 0.75*btnHeight);
 
   fill(0);
-  textSize(28);
+  textSize(32);
   textAlign(CENTER);
   text(crowntapped + crownscore, windowWidth/2, btnY+0.75*btnWidth/2+20);
   text(dirttapped + dirtscore, windowWidth/2, btnY2+0.75*btnWidth/2+20);
